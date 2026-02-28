@@ -198,5 +198,9 @@ export const useAppStore = create((set, get) => ({
     }));
     return newPayment;
   },
+
+  // Global UI State
+  isQRModalOpen: false,
+  setIsQRModalOpen: (isOpen) => set({ isQRModalOpen: isOpen }),
 }));
 

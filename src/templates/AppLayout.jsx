@@ -65,10 +65,9 @@ export default function AppLayout() {
   const { initializeData } = useAppStore();
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 1024);
   const [openDropdowns, setOpenDropdowns] = useState(['Bookings']); // Default bookings open
-  const [hotelName, setHotelName] = useState('');
-  const [hotelData, setHotelData] = useState(null);
-  const [isQRModalOpen, setIsQRModalOpen] = useState(false);
+  const { isQRModalOpen, setIsQRModalOpen, hotel } = useAppStore();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [hotelName, setHotelName] = useState('');
   console.log(user, 'user user ');
 
   // Filter menu items based on permissions
@@ -138,11 +137,10 @@ export default function AppLayout() {
 
       try {
         const response = await hotelManagementApi.getMyHotel();
-        const hotel = response.data || response;
-        if (hotel) {
-          setHotelData(hotel);
-          setHotelName(hotel.name || '');
-          useAppStore.setState({ hotel }); // Sync with store
+        const fetchedHotel = response.data || response;
+        if (fetchedHotel) {
+          setHotelName(fetchedHotel.name || '');
+          useAppStore.setState({ hotel: fetchedHotel }); // Sync with store
         }
       } catch (error) {
         console.error('Failed to fetch hotel data:', error);
@@ -223,7 +221,7 @@ export default function AppLayout() {
         </head>
         <body>
           <div class="container">
-            <h1>${hotelData.name}</h1>
+            <h1>${hotel.name}</h1>
             <p>Scan to Rate & Review</p>
             <div class="qr-box">${svgContent}</div>
             <div class="footer">Thank you for your visit!</div>
@@ -276,14 +274,14 @@ export default function AppLayout() {
         ctx.fillStyle = '#1A1A40';
         ctx.font = 'bold 60px Inter, sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText(hotelData.name, canvas.width / 2, 100);
+        ctx.fillText(hotel.name, canvas.width / 2, 100);
         ctx.font = '40px Inter, sans-serif';
         ctx.fillText('Scan to Rate & Review', canvas.width / 2, 1150);
 
         const pngUrl = canvas.toDataURL('image/png');
         const downloadLink = document.createElement('a');
         downloadLink.href = pngUrl;
-        downloadLink.download = `${hotelData.name.replace(/\s+/g, '_')}_Review_QR.png`;
+        downloadLink.download = `${hotel.name.replace(/\s+/g, '_')}_Review_QR.png`;
         document.body.appendChild(downloadLink);
         downloadLink.click();
         document.body.removeChild(downloadLink);
@@ -356,7 +354,7 @@ export default function AppLayout() {
 
         {/* Right Section: Actions + User Profile */}
         <div className="flex items-center gap-2 sm:gap-4 ml-auto">
-          {!isSuperAdmin && hotelData && (
+          {!isSuperAdmin && hotel && (
             <div className="hidden lg:flex items-center gap-2">
               <Button
                 variant="primary"
@@ -405,7 +403,7 @@ export default function AppLayout() {
                   <p className="text-xs text-[#1A1A40]/80">{user?.role}</p>
                 </div>
 
-                {!isSuperAdmin && hotelData && (
+                {!isSuperAdmin && hotel && (
                   <div className="lg:hidden border-b border-gray-50">
                     <button
                       onClick={(e) => {
@@ -591,12 +589,12 @@ export default function AppLayout() {
         title="Hotel Review QR Code"
         size="md"
       >
-        {hotelData && (
+        {hotel && (
           <div className="flex flex-col items-center gap-4 py-2 transform scale-[0.85] origin-top">
             <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
               <QRCodeSVG
                 id="header-hotel-qr"
-                value={`${window.location.origin}/#/review?hotelId=${hotelData._id || hotelData.id}`}
+                value={`${window.location.origin}/#/review?hotelId=${hotel._id || hotel.id}`}
                 size={200}
                 level="H"
                 includeMargin={true}
@@ -604,7 +602,7 @@ export default function AppLayout() {
             </div>
 
             <div className="text-center space-y-2">
-              <h3 className="text-xl font-bold text-[#1A1A40]">{hotelData.name}</h3>
+              <h3 className="text-xl font-bold text-[#1A1A40]">{hotel.name}</h3>
               <p className="text-sm text-gray-500 max-w-xs mx-auto">
                 Guests can scan this QR code to quickly rate and review your hotel.
               </p>
@@ -615,7 +613,7 @@ export default function AppLayout() {
                 variant="outline"
                 className="flex-1"
                 onClick={() => {
-                  const url = `${window.location.origin}/#/review?hotelId=${hotelData._id || hotelData.id}`;
+                  const url = `${window.location.origin}/#/review?hotelId=${hotel._id || hotel.id}`;
                   navigator.clipboard.writeText(url);
                   toast.success('Review URL copied to clipboard');
                 }}
@@ -626,7 +624,7 @@ export default function AppLayout() {
               <Button
                 variant="outline"
                 className="flex-1"
-                onClick={() => window.open(`/#/review?hotelId=${hotelData._id || hotelData.id}`, '_blank')}
+                onClick={() => window.open(`/#/review?hotelId=${hotel._id || hotel.id}`, '_blank')}
               >
                 <ExternalLink className="w-4 h-4 mr-2" />
                 Open Page
@@ -648,11 +646,11 @@ export default function AppLayout() {
       <iframe id="print-iframe" style={{ display: 'none' }} title="Print QR" />
 
       {/* Hidden QR for instant printing/access - Using opacity instead of display:none for better reliability */}
-      {!isSuperAdmin && hotelData && (
+      {!isSuperAdmin && hotel && (
         <div style={{ position: 'absolute', opacity: 0, pointerEvents: 'none', zIndex: -1 }} aria-hidden="true">
           <QRCodeSVG
             id="layout-hotel-print-qr"
-            value={`${window.location.origin}/#/review?hotelId=${hotelData._id || hotelData.id}`}
+            value={`${window.location.origin}/#/review?hotelId=${hotel._id || hotel.id}`}
             size={400} // Larger source for better print quality
             level="H"
             includeMargin={true}

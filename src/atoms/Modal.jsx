@@ -33,19 +33,26 @@ export const Modal = ({
   };
 
   return (
-    <div className="fixed inset-0 z-[1000] overflow-y-auto">
+    <div className="fixed inset-0 z-[9999] overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen px-4 py-8 pointer-events-none">
         <div
-          className="fixed inset-0 transition-opacity bg-black/60 backdrop-blur-sm pointer-events-auto"
-          onPointerDown={(e) => {
-            e.stopPropagation();
-            onClose();
+          className="fixed inset-0 transition-opacity bg-black/40 backdrop-blur-md pointer-events-auto"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) {
+              e.currentTarget._trackingClick = true;
+            }
+          }}
+          onMouseUp={(e) => {
+            if (e.target === e.currentTarget && e.currentTarget._trackingClick) {
+              delete e.currentTarget._trackingClick;
+              onClose();
+            }
           }}
         />
 
         <div
-          className={`relative bg-white rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all ${sizes[size]} w-full flex flex-col max-h-[90vh] pointer-events-auto ${containerClassName}`}
-          onPointerDown={(e) => e.stopPropagation()}
+          className={`relative bg-white rounded-[32px] text-left overflow-hidden shadow-2xl transform transition-all border border-white/20 ${sizes[size]} w-full flex flex-col max-h-[90vh] pointer-events-auto ${containerClassName}`}
+          onMouseDown={(e) => e.stopPropagation()}
         >
           {(title || showCloseButton) && (
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 flex-shrink-0">
