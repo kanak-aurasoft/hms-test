@@ -410,7 +410,8 @@ export default function AppLayout() {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        setIsUserMenuOpen(false);
+                        // ONLY open modal. Dropdown closure will be handled by 
+                        // handleClickOutside naturally when user interacts with Modal.
                         setIsQRModalOpen(true);
                       }}
                       className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
@@ -421,8 +422,8 @@ export default function AppLayout() {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        setIsUserMenuOpen(false);
                         handleDownloadQR();
+                        setIsUserMenuOpen(false);
                       }}
                       className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                     >
@@ -432,8 +433,8 @@ export default function AppLayout() {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        setIsUserMenuOpen(false);
                         handlePrintQR();
+                        setIsUserMenuOpen(false);
                       }}
                       className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                     >
