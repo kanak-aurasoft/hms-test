@@ -152,76 +152,88 @@ export default function AppLayout() {
   };
 
   const handlePrintQR = () => {
-    if (!hotelData) return;
-
-    const printWindow = window.open('', '_blank');
-    const svgElement = document.getElementById('header-hotel-qr');
-    if (!svgElement) {
-      toast.error('QR element not found');
+    if (!hotelData) {
+      toast.error('Hotel data not loaded');
       return;
     }
 
-    const svgData = new XMLSerializer().serializeToString(svgElement);
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    const img = new Image();
+    const svgElement = document.getElementById('layout-hotel-print-qr');
+    if (!svgElement) {
+      toast.error('Preparing QR code... Please try again.');
+      return;
+    }
 
-    img.onload = () => {
-      canvas.width = img.width * 2;
-      canvas.height = img.height * 2;
-      ctx.fillStyle = 'white';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      toast.error('Pop-up blocked. Please allow pop-ups for this site.');
+      return;
+    }
 
-      const qrImage = canvas.toDataURL('image/png');
+    const svgContent = new XMLSerializer().serializeToString(svgElement);
 
-      printWindow.document.write(`
-        <html>
-          <head>
-            <title>Print QR Code - ${hotelData.name}</title>
-            <style>
-              body { 
-                font-family: 'Inter', sans-serif; 
-                display: flex; 
-                flex-direction: column; 
-                align-items: center; 
-                justify-content: center; 
-                height: 100vh; 
-                margin: 0;
-                text-align: center;
-              }
-              .container { 
-                padding: 40px; 
-                border: 2px solid #EEE; 
-                border-radius: 24px;
-                max-width: 400px;
-              }
-              h1 { color: #1A1A40; margin-bottom: 8px; font-size: 28px; }
-              p { color: #666; margin-bottom: 32px; font-size: 18px; }
-              img { width: 300px; height: 300px; margin-bottom: 24px; }
-              .footer { color: #888; font-size: 14px; margin-top: 24px; }
-            </style>
-          </head>
-          <body>
-            <div class="container">
-              <h1>${hotelData.name}</h1>
-              <p>Scan to leave a review</p>
-              <img src="${qrImage}" />
-              <div class="footer">Thank you for visiting us!</div>
-            </div>
-            <script>
-              window.onload = () => {
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Print QR Code - ${hotelData.name}</title>
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+            body { 
+              font-family: 'Inter', sans-serif; 
+              display: flex; 
+              flex-direction: column; 
+              align-items: center; 
+              justify-content: center; 
+              min-height: 100vh; 
+              margin: 0;
+              text-align: center;
+              background-color: #F8FAFC;
+            }
+            .container { 
+              padding: 48px; 
+              background: white;
+              border: 1px solid #E2E8F0; 
+              border-radius: 32px;
+              box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+              max-width: 450px;
+              width: 90%;
+            }
+            h1 { color: #1A1A40; margin-bottom: 8px; font-size: 32px; font-weight: 700; }
+            p { color: #64748B; margin-bottom: 40px; font-size: 18px; }
+            .qr-wrapper { 
+              background: white;
+              padding: 16px;
+              border: 1px solid #F1F5F9;
+              border-radius: 20px;
+              display: inline-block;
+              margin-bottom: 32px;
+            }
+            svg { width: 280px; height: 280px; }
+            .footer { color: #94A3B8; font-size: 14px; margin-top: 32px; font-weight: 500; }
+            @media print {
+              body { background-color: white; }
+              .container { border: none; box-shadow: none; padding: 20px; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <h1>${hotelData.name}</h1>
+            <p>Scan to leave a review</p>
+            <div class="qr-wrapper">${svgContent}</div>
+            <div class="footer">Thank you for visiting us!</div>
+          </div>
+          <script>
+            window.onload = () => {
+              setTimeout(() => {
                 window.print();
                 window.onafterprint = () => window.close();
-              };
-            </script>
-          </body>
-        </html>
-      `);
-      printWindow.document.close();
-    };
-
-    img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+              }, 500);
+            };
+          </script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
   };
 
   const isSuperAdmin = user?.role === 'super_admin' || user?.role === 'Super Admin' || user?.role === 'SuperAdmin';
@@ -298,10 +310,7 @@ export default function AppLayout() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => {
-                  setIsQRModalOpen(true);
-                  setTimeout(handlePrintQR, 500); // Small delay to ensure QR is rendered
-                }}
+                onClick={handlePrintQR}
                 className="hidden sm:flex items-center gap-2"
                 style={{ borderColor: '#039E2F', color: '#039E2F' }}
               >
@@ -349,8 +358,7 @@ export default function AppLayout() {
                     </button>
                     <button
                       onClick={() => {
-                        setIsQRModalOpen(true);
-                        setTimeout(handlePrintQR, 500);
+                        handlePrintQR();
                         setIsUserMenuOpen(false);
                       }}
                       className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
@@ -560,6 +568,19 @@ export default function AppLayout() {
           </div>
         )}
       </Modal>
+
+      {/* Hidden QR for instant printing/access */}
+      {!isSuperAdmin && hotelData && (
+        <div style={{ display: 'none' }} aria-hidden="true">
+          <QRCodeSVG
+            id="layout-hotel-print-qr"
+            value={`${window.location.origin}/#/review?hotelId=${hotelData._id || hotelData.id}`}
+            size={300}
+            level="H"
+            includeMargin={true}
+          />
+        </div>
+      )}
     </div>
   );
 }
