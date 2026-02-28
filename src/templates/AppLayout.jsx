@@ -404,11 +404,10 @@ export default function AppLayout() {
                 {!isSuperAdmin && hotel && (
                   <div className="lg:hidden border-b border-gray-50">
                     <button
-                      onPointerDown={(e) => {
+                      onClick={(e) => {
                         e.stopPropagation();
-                        // Open instantly on touch start to beat any synthesized clicks
-                        setIsQRModalOpen(true);
                         setIsUserMenuOpen(false);
+                        setIsQRModalOpen(true);
                       }}
                       className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                     >

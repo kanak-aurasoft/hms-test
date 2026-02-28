@@ -40,12 +40,12 @@ export const Modal = ({
         <div
           ref={overlayRef}
           className="fixed inset-0 transition-opacity bg-black/40 backdrop-blur-md pointer-events-auto"
-          onMouseDown={(e) => {
+          onPointerDown={(e) => {
             if (e.target === overlayRef.current) {
               e.currentTarget._tracking = true;
             }
           }}
-          onMouseUp={(e) => {
+          onPointerUp={(e) => {
             if (e.target === overlayRef.current && e.currentTarget._tracking) {
               delete e.currentTarget._tracking;
               onClose();

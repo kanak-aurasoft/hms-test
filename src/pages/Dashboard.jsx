@@ -159,8 +159,7 @@ export default function Dashboard() {
                 <div
                   className="p-2 rounded-xl shadow-lg"
                   style={{
-                    background: 'rgba(255, 255, 255, 0.2)',
-                    backdropFilter: 'blur(10px)',
+                    background: 'rgba(255, 255, 255, 0.15)',
                   }}
                 >
                   <GreetingIcon className="w-5 h-5 text-white" />
@@ -198,9 +197,8 @@ export default function Dashboard() {
             <div
               className="hidden sm:flex items-center justify-center w-16 h-16 rounded-2xl shadow-xl flex-shrink-0"
               style={{
-                background: 'rgba(255, 255, 255, 0.15)',
-                backdropFilter: 'blur(10px)',
-                border: '2px solid rgba(255, 255, 255, 0.2)',
+                background: 'rgba(255, 255, 255, 0.1)',
+                border: '2px solid rgba(255, 255, 255, 0.15)',
               }}
             >
               <Building2 className="w-8 h-8 text-white" />
