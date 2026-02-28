@@ -416,8 +416,12 @@ export default function AppLayout() {
                   <div className="lg:hidden border-b border-gray-50">
                     <button
                       onClick={(e) => {
+                        e.preventDefault();
                         e.stopPropagation();
-                        handleDropdownAction(() => setIsQRModalOpen(true));
+                        // Open modal first
+                        setIsQRModalOpen(true);
+                        // Close menu second with a slight delay to avoid event conflicts on mobile
+                        setTimeout(() => setIsUserMenuOpen(false), 50);
                       }}
                       className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                     >
