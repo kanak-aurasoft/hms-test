@@ -136,36 +136,29 @@ export default function Dashboard() {
   return (
     <div className="space-y-8">
       {/* Modern Welcome Section */}
-      <Card className="overflow-hidden border-0 shadow-xl">
+      <Card className="overflow-hidden border-0 shadow-lg">
         <div
           className="relative p-5 sm:p-6"
           style={{
-            background: 'linear-gradient(135deg, #039E2F 0%, #027a24 50%, #039E2F 100%)',
-            backgroundSize: '200% 200%',
+            background: 'linear-gradient(to bottom right, #039E2F, #027a24)',
           }}
         >
           {/* Decorative Elements */}
-          <div className="absolute top-0 right-0 w-40 h-40 opacity-10">
-            <Sparkles className="w-full h-full" style={{ color: '#FFFFFF' }} />
-          </div>
-          <div className="absolute bottom-0 left-0 w-32 h-32 opacity-10">
-            <Building2 className="w-full h-full" style={{ color: '#FFFFFF' }} />
+          <div className="absolute top-0 right-0 w-32 h-32 opacity-10 pointer-events-none">
+            <Sparkles className="w-full h-full text-white" />
           </div>
 
           {/* Content */}
-          <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex-1">
               <div className="flex items-center gap-2.5 mb-2">
                 <div
-                  className="p-2 rounded-xl shadow-lg"
-                  style={{
-                    background: 'rgba(255, 255, 255, 0.15)',
-                  }}
+                  className="p-2 rounded-xl bg-white/10"
                 >
                   <GreetingIcon className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <p className="text-white/90 text-xs font-semibold uppercase tracking-wider">
+                  <p className="text-white/80 text-xs font-semibold uppercase tracking-wider">
                     {greeting.text}
                   </p>
                   {userName && (
@@ -195,11 +188,7 @@ export default function Dashboard() {
 
             {/* Icon Badge */}
             <div
-              className="hidden sm:flex items-center justify-center w-16 h-16 rounded-2xl shadow-xl flex-shrink-0"
-              style={{
-                background: 'rgba(255, 255, 255, 0.1)',
-                border: '2px solid rgba(255, 255, 255, 0.15)',
-              }}
+              className="hidden sm:flex items-center justify-center w-16 h-16 rounded-2xl flex-shrink-0 bg-white/10 border border-white/20"
             >
               <Building2 className="w-8 h-8 text-white" />
             </div>
