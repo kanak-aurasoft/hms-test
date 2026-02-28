@@ -19,9 +19,8 @@ import { theme } from '../utils/theme';
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { bookings, initializeData } = useAppStore();
+  const { bookings, initializeData, hotel } = useAppStore();
   const { user } = useAuthStore();
-  const [hotelName, setHotelName] = useState('');
   const [superAdminStats, setSuperAdminStats] = useState(null);
   const [loadingStats, setLoadingStats] = useState(false);
 
@@ -57,28 +56,8 @@ export default function Dashboard() {
   }, [user]);
 
   // Fetch hotel name for admin/subadmin users
-  useEffect(() => {
-    const fetchHotelName = async () => {
-      // Only fetch for admin/subadmin, not for super_admin
-      const isSuperAdmin = user?.role === 'super_admin' || user?.role === 'Super Admin' || user?.role === 'SuperAdmin';
-      if (isSuperAdmin) return;
-
-      try {
-        const response = await hotelManagementApi.getMyHotel();
-        const hotel = response.data || response;
-        if (hotel?.name) {
-          setHotelName(hotel.name);
-        }
-      } catch (error) {
-        console.error('Failed to fetch hotel:', error);
-        // Don't show error toast, just silently fail
-      }
-    };
-
-    if (user) {
-      fetchHotelName();
-    }
-  }, [user]);
+  // Use hotel name from store
+  const hotelName = useMemo(() => hotel?.name || '', [hotel]);
 
   // Admin-specific stats (for Admin role)
   const adminStats = useMemo(() => {
