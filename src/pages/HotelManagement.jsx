@@ -513,7 +513,7 @@ export default function HotelManagement() {
                 </Button>
                 {isSuperAdmin && (
                   <>
-                    <Button
+                    {/* <Button
                       variant="outline"
                       size="sm"
                       onClick={() => handleAccessHotel(hotel)}
@@ -521,7 +521,7 @@ export default function HotelManagement() {
                     >
                       <Building className="w-4 h-4 mr-1" />
                       Access
-                    </Button>
+                    </Button> */}
                     <Button
                       variant="outline"
                       size="sm"
